@@ -1,34 +1,40 @@
-import { LinksFunction } from "@remix-run/node";
-import { ComponentProps, ForwardRefExoticComponent } from "react";
+/* eslint-disable react/display-name */
+import { ComponentProps, forwardRef, ForwardRefExoticComponent } from "react";
 import classNames from "~/utils/classNames";
 
-type ButtonProps = {
+export type ButtonProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttonComponent?: ForwardRefExoticComponent<any>;
-} & ComponentProps<"button">;
+  disabled?: boolean;
+} & Omit<ComponentProps<"button">, "ref">;
 
-export default function ButtonBase({
-  buttonComponent,
-  children,
-  className,
-  ...props
-}: ButtonProps) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let Component: ForwardRefExoticComponent<any> | string = "button";
+const ButtonBase = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ buttonComponent, children, className, disabled, ...props }, ref) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let Component: ForwardRefExoticComponent<any> | string = "button";
 
-  if (buttonComponent) {
-    Component = buttonComponent;
+    if (buttonComponent) {
+      Component = buttonComponent;
+    }
+
+    return (
+      <Component
+        ref={ref}
+        disabled={disabled}
+        className={classNames(
+          "px-[20px] transition-all sm:text-[16px] py-[6px] rounded-[8px]",
+          {
+            "bg-gray-1 dark:bg-gray-9": !disabled,
+            "": disabled,
+          },
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </Component>
+    );
   }
+);
 
-  return (
-    <Component
-      className={classNames(
-        "pl-[20px] pr-[20px] h-[32px] border border-gray-1 dark:border-gray-9 rounded-[8px]",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </Component>
-  );
-}
+export default ButtonBase;

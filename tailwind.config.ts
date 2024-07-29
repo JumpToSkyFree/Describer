@@ -18,6 +18,8 @@ export default {
         "gray-8.5": "#2A2A2A",
         "gray-9": "#1C1C1C",
         "gray-9.5": "#0E0E0E",
+        "cnt-light": "#FBFBFB",
+        "cnt-dark": "#0C0C0C",
       },
       fontFamily: {
         sans: ["Overused Grotesk", "system-ui"],

@@ -89,7 +89,7 @@ export default function Logo({ lettersRefs, lineRef, ...props }: LogoProps) {
           y2="77.457"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor={darkMode ? "white" : "black"} />
+          <stop offset="0" stopColor={darkMode ? "white" : "black"} />
           <stop offset="0.50" stopColor="#FF5C00" />
           <stop offset="1" stopColor={darkMode ? "black" : "white"} />
         </linearGradient>

@@ -1,21 +1,27 @@
-import { ComponentProps } from "react";
+/* eslint-disable react/display-name */
+import { forwardRef, PropsWithChildren } from "react";
 import { motion } from "framer-motion";
-import ButtonBase from "./Base/Button";
+import ButtonBase, { ButtonProps } from "./Base/Button";
 
-export function Button({
-  children,
-  ...props
-}: ComponentProps<typeof ButtonBase>) {
-  return <ButtonBase {...props}>{children}</ButtonBase>;
-}
+const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>(
+  ({ children, ...props }, ref) => {
+    return (
+      <ButtonBase ref={ref} {...props}>
+        {children}
+      </ButtonBase>
+    );
+  }
+);
 
-export function MotionButton({
-  children,
-  ...props
-}: ComponentProps<typeof ButtonBase>) {
+const ButtonMotion = forwardRef<
+  HTMLButtonElement,
+  PropsWithChildren<ButtonProps>
+>(({ children, ...props }, ref) => {
   return (
-    <ButtonBase buttonComponent={motion.div} {...props}>
+    <ButtonBase ref={ref} buttonComponent={motion.div} {...props}>
       {children}
     </ButtonBase>
   );
-}
+});
+
+export { Button, ButtonMotion };

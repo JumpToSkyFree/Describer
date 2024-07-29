@@ -1,43 +1,33 @@
-import { ComponentProps, PropsWithChildren, useEffect, useRef } from "react";
-import { animate, AnimationSequence, motion, stagger } from "framer-motion";
-import Logo from "./Base/Logo";
-import { Button } from "./Button";
+import {
+  ComponentProps,
+  PropsWithChildren,
+  useContext,
+  // useState,
+} from "react";
 import classNames from "~/utils/classNames";
+import Marquee from "react-fast-marquee";
+// import UserCategorization from "./UserCategorization";
+import { useTranslation } from "react-i18next";
+import { Button } from "./Button";
+import UserCategorizationMachineCtx from "~/contexts/UserCategorizationMachineCtx";
+import AnimatedIntroductionLogo from "./AnimatedIntroductionLogo";
 
-function AnimatedIntroductionLogo() {
-  const lineRef = useRef<SVGPathElement>();
-  const lettersRefs = useRef<Array<SVGPathElement>>([]);
+function TeaserIntroduction() {
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (lineRef.current && lettersRefs.current) {
-      const sequence: AnimationSequence = [
-        [
-          lettersRefs.current,
-          { opacity: [0, 1] },
-          { duration: 1, delay: stagger(0.1) },
-        ],
-        [
-          lineRef.current,
-          {
-            opacity: [0, 1],
-            pathLength: [0, 1],
-            // d: ["M143.128 76.957H143.531", "M143.128 76.957H284.531"],
-          },
-          { duration: 0.5, at: 1 },
-        ],
-      ];
-      animate(sequence);
-    }
-  }, []);
   return (
-    <Logo lineRef={lineRef} lettersRefs={lettersRefs} className="col-start-1" />
+    <>
+      <AnimatedIntroductionLogo />
+      <p className="sm:block text-[14px] sm:text-[16px] leading-[150%] text-justify font-light text-gray-5">
+        {t("description")}
+      </p>
+    </>
   );
 }
 
 interface TeaserSubContainerProps {
   borderTop?: boolean;
   paddingTop?: boolean;
-  // paddingBottom?: boolean;
 }
 
 function TeaserSubContainer({
@@ -52,11 +42,10 @@ function TeaserSubContainer({
   return (
     <div
       className={classNames(
-        "grid gap-[20px]",
+        "gap-[20px]",
         {
           "border-t border-gray-1 dark:border-gray-9": borderTop,
           "pt-[20px]": paddingTop,
-          // "pb-[20px]": paddingBottom,
         },
         className
       )}
@@ -66,31 +55,40 @@ function TeaserSubContainer({
 }
 
 export default function Teaser() {
+  const { t } = useTranslation();
+  const { send } = useContext(UserCategorizationMachineCtx);
   return (
-    <div className="lg:col-start-4 lg:col-end-10 border border-gray-1 dark:border-gray-9 p-[20px] rounded-[20px] grid gap-[20px] overflow-hidden">
-      <TeaserSubContainer>
-        <AnimatedIntroductionLogo />
-        <p className="text-[16px] leading-[150%] text-justify font-light text-gray-5">
-          Introducing &ldquo;Describer&ldquo;, a game-changing social media
-          platform designed specifically for high-end brands, artists, and
-          designers. This cutting-edge platform is engineered to showcase
-          refined and sophisticated content, allowing users to experience the
-          art of storytelling at lightning-fast speeds. With its unique ability
-          to instantaneously deliver high-quality visual content, Describer is
-          poised to revolutionize the way we consume and interact with content.
-        </p>
+    <>
+      <TeaserSubContainer
+        key={0}
+        className="flex flex-col gap-[20px] mt-[20px] mx-[20px]"
+      >
+        <TeaserIntroduction />
       </TeaserSubContainer>
-      <TeaserSubContainer paddingTop borderTop>
-        <div className="flex flex-row justify-center items-center gap-[8px] flex-wrap">
-          <span className="text-gray-5">Are you</span>
-          <Button>A Viewer</Button>
-          <Button>A Brand</Button>
-          <Button>An Artist</Button>
-          <Button>A New Citizen Of Describer 😏</Button>
-          <Button>Other</Button>
-        </div>
+      <TeaserSubContainer key={1} className="px-[20px]" paddingTop borderTop>
+        <Button
+          className="w-full"
+          onClick={() =>
+            send({
+              type: "categorization.ui.joinWaitingListClicked",
+            })
+          }
+        >
+          Join waiting list
+        </Button>
       </TeaserSubContainer>
-      <TeaserSubContainer paddingTop borderTop></TeaserSubContainer>
-    </div>
+      <TeaserSubContainer
+        key={2}
+        className="flex flex-row mb-[20px] overflow-hidden"
+        paddingTop
+        borderTop
+      >
+        <Marquee autoFill>
+          <span className="ml-[30px] mr-[30px] text-[42px] lg:text-[50px] font-light select-none cursor-default uppercase">
+            {t("coming-soon")}
+          </span>
+        </Marquee>
+      </TeaserSubContainer>
+    </>
   );
 }
