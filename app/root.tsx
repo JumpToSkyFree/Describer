@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   json,
   Links,
@@ -6,12 +7,14 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
 } from "@remix-run/react";
 import "./tailwind.css";
 // import { useChangeLanguage } from "remix-i18next/react";
 import { useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 import { LoaderFunction } from "@remix-run/node";
+import useServerContext from "describer-server-context/dist/hooks/useServerContext";
 // import { useChangeLanguage } from "remix-i18next/react";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -31,7 +34,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const _ = useLoaderData<typeof loader>();
 
   const { i18n } = useTranslation();
-  console.log(i18n);
   // useChangeLanguage(locale);
 
   return (
@@ -39,7 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/public/favicon.svg" />
+        <link rel="icon" href="/favicon.svg" />
         <Meta />
         <Links />
       </head>
@@ -52,30 +54,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// export function ErrorBoundary() {
-//   const error = useRouteError();
-//   // const { locale } = useLoaderData<typeof loader>();
+export function ErrorBoundary() {
+  const error = useRouteError();
+  // const { locale } = useLoaderData<typeof loader>();
 
-//   const { i18n } = useTranslation();
-//   // useChangeLanguage(locale);
+  const { i18n } = useTranslation();
+  // useChangeLanguage(locale);
 
-//   return (
-//     <html lang="en" dir={i18n.dir()}>
-//       <head>
-//         <meta charSet="utf-8" />
-//         <meta name="viewport" content="width=device-width, initial-scale=1" />
-//         <link rel="icon" href="/public/favicon.svg" />
-//         <Meta />
-//         <Links />
-//       </head>
-//       <body className="dark:bg-black dark:text-white">
-//         {/* add the UI you want your users to see */}
-//         <h1>{"Oh no, you're not a good man"}</h1>
-//         <Scripts />
-//       </body>
-//     </html>
-//   );
-// }
+  return (
+    <html lang="en" dir={i18n.dir()}>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.svg" />
+        <Meta />
+        <Links />
+      </head>
+      <body className="dark:bg-black dark:text-white">
+        {/* add the UI you want your users to see */}
+        <h1>{"Oh no, you're not a good man"}</h1>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 export default function App() {
   return <Outlet />;

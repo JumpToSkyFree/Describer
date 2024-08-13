@@ -18,7 +18,7 @@ function TeaserIntroduction() {
   return (
     <>
       <AnimatedIntroductionLogo />
-      <p className="sm:block text-[14px] sm:text-[16px] leading-[150%] text-justify font-light text-gray-5">
+      <p className="sm:block text-[0.8750rem] sm:text-[1rem] leading-[150%] text-justify font-light text-gray-5">
         {t("description")}
       </p>
     </>

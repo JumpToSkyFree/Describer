@@ -22,10 +22,11 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled}
         className={classNames(
-          "px-[20px] transition-all sm:text-[16px] py-[6px] rounded-[8px]",
+          "px-[20px] transition-all text-[0.8750rem] sm:text-[1rem] py-[6px] rounded-[8px]",
           {
-            "bg-gray-1 dark:bg-gray-9": !disabled,
-            "": disabled,
+            "bg-gray-1 dark:bg-gray-9 cursor-pointer": !disabled,
+            "bg-[#FBFBFB] dark:bg-[#0F0F0F] text-[#00000033] dark:text-[#ffffff33] cursor-not-allowed":
+              disabled,
           },
           className
         )}

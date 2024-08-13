@@ -23,7 +23,7 @@ const SubmitButton = forwardRef<HTMLInputElement, InputProps>(
         disabled={disabled}
         type="submit"
         className={classNames(
-          "px-[20px] transition-all sm:text-[16px] py-[6px] rounded-[8px] cursor-pointer",
+          "px-[20px] transition-all text-[0.8750rem] sm:text-[1rem] py-[6px] rounded-[8px] cursor-pointer",
           {
             "bg-gray-1 dark:bg-gray-9": !disabled,
             "": disabled,

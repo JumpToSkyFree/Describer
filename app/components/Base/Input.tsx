@@ -22,7 +22,7 @@ const InputBase = forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         disabled={disabled}
         className={classNames(
-          "px-[20px] transition-colors sm:text-[16px] py-[6px] rounded-[8px] placeholder:text-[#0000003d] dark:placeholder:text-[#ffffff3d] placeholder:font-normal focus-visible:outline-none focus:outline-none",
+          "px-[20px] transition-colors text-[0.8750rem] sm:text-[1rem] py-[6px] rounded-[8px] placeholder:text-[#0000003d] dark:placeholder:text-[#ffffff3d] placeholder:font-normal focus-visible:outline-none focus:outline-none",
           {
             "bg-gray-0.5 dark:bg-gray-9.5": !disabled,
             "": disabled,

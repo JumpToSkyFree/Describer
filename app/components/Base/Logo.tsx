@@ -8,6 +8,7 @@ type LogoProps = ComponentProps<"svg"> & {
 
 export default function Logo({ lettersRefs, lineRef, ...props }: LogoProps) {
   const darkMode = useMediaQuery({ query: "(prefers-color-scheme: dark)" });
+
   return (
     <svg
       {...props}

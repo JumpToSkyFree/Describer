@@ -26,7 +26,7 @@ const LanguagePicker = ({ className, ...props }: LanguagePickerProps) => {
   // useChangeLanguage(activeLanguage);
 
   const availableLanguages = useMemo(() => {
-    return languages.filter((lang) =>
+    return languages.filter((lang: { code: string }) =>
       i18nSettings.supportedLngs.includes(lang.code)
     );
   }, []);
@@ -112,22 +112,24 @@ const LanguagePicker = ({ className, ...props }: LanguagePickerProps) => {
           nextLanguage();
         }}
       >
-        {availableLanguages.map((lang, index) => {
-          return (
-            <span
-              ref={(el) => {
-                if (el) languagesElements.current[index] = el;
-              }}
-              data-lang={lang.code}
-              className={classNames({
-                "opacity-20": activeLanguage !== lang.code,
-              })}
-              key={index}
-            >
-              {lang.native}
-            </span>
-          );
-        })}
+        {availableLanguages.map(
+          (lang: { code: string; native: string }, index: number) => {
+            return (
+              <span
+                ref={(el) => {
+                  if (el) languagesElements.current[index] = el;
+                }}
+                data-lang={lang.code}
+                className={classNames({
+                  "opacity-20": activeLanguage !== lang.code,
+                })}
+                key={index}
+              >
+                {lang.native}
+              </span>
+            );
+          }
+        )}
       </motion.div>
     </div>
   );
