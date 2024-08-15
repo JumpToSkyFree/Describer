@@ -1,4 +1,3 @@
-// import { useTranslation } from "react-i18next";
 import { Form } from "@remix-run/react";
 import { Input } from "./Input";
 import { useEffect, useLayoutEffect, useRef } from "react";
@@ -6,28 +5,53 @@ import Logo from "./Base/Logo";
 import { AnimationSequence, animate, ElementOrSelector } from "framer-motion";
 import { Button } from "./Button";
 import { useConsumeServerContext } from "describer-server-context";
-import { JoinWaitingListServerContext } from "./interfaces";
+import {
+  FieldsResponseErrors,
+  JoinWaitingListServerContext,
+  WaitingListUserInformations,
+} from "./interfaces";
 import useLocalStorageState from "use-local-storage-state";
 
-function checkUserRegistered(response: JoinWaitingListServerContext) {
-  return response && "success" in response;
+function checkUserRegistered(response: JoinWaitingListServerContext): boolean {
+  // if (response && isFieldsResponseErrors(response)) {
+  //   return response.errors["email"].codes.at(0) === "already_exists";
+  // }
+
+  return (
+    response !== null && response && "success" in response && response.success
+  );
 }
 
 export default function JoinWaitingList() {
   const ref = useRef<HTMLFormElement | null>(null);
-  const [registered, setRegistered] = useLocalStorageState(
-    "registeredInNewsletter",
-    {
-      defaultValue: false,
-    }
-  );
+  const [registered, setRegistered] =
+    useLocalStorageState<WaitingListUserInformations>(
+      "registeredInNewsletter",
+      {
+        defaultValue: null,
+      }
+    );
 
   const [context] =
     useConsumeServerContext<JoinWaitingListServerContext>("joinWaitingList");
 
   useLayoutEffect(() => {
-    console.log(context);
-    if (checkUserRegistered(context)) setRegistered(true);
+    if (checkUserRegistered(context)) {
+      setRegistered({
+        fullname: (context as WaitingListUserInformations)?.fullname,
+        email: (context as WaitingListUserInformations)?.email,
+      } as WaitingListUserInformations);
+      return;
+    }
+
+    if (context && "errors" in context) {
+      setRegistered({
+        fullname: (context as FieldsResponseErrors<WaitingListUserInformations>)
+          .data?.fullname,
+        email: (context as FieldsResponseErrors<WaitingListUserInformations>)
+          .data?.email,
+      } as WaitingListUserInformations);
+    }
   }, [context]);
 
   // TODO: Make a mechanism for better error handling.
@@ -56,20 +80,27 @@ export default function JoinWaitingList() {
         </span>
       </div>
       <Input
+        readOnly={registered !== null}
+        disabled={registered !== null}
         className="capitalize placeholder:capitalize"
         type="text"
         name="fullname"
         placeholder="Full name"
         required
+        value={registered !== null ? registered.fullname : undefined}
       />
-      <Input name="email" type="email" placeholder="Email" required />
-      <Button
-        disabled={registered || checkUserRegistered(context)}
-        type="submit"
-      >
-        {registered || checkUserRegistered(context)
-          ? "Registered successfully"
-          : "Submit"}
+      <Input
+        readOnly={registered !== null}
+        className="flex justify-center items-center"
+        disabled={registered !== null}
+        name="email"
+        type="email"
+        placeholder="Email"
+        required
+        value={registered !== null ? registered.email : undefined}
+      />
+      <Button disabled={registered !== null} type="submit">
+        {registered !== null ? "Already joined waiting list" : "Submit"}
       </Button>
     </Form>
   );

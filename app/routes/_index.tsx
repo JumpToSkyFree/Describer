@@ -1,20 +1,13 @@
-import {
-  json,
-  type ActionFunctionArgs,
-  type MetaFunction,
-} from "@remix-run/node";
+import { type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { AnimatePresence, motion, TargetAndTransition } from "framer-motion";
 import Teaser from "~/components/Teaser";
 import { useMachine } from "@xstate/react";
 import { userCategorizationUIMachine } from "~/machines/userCategorizationUIMachine";
 import UserCategorizationMachineCtx from "~/contexts/UserCategorizationMachineCtx";
 import JoinWaitingList from "~/components/JoinWaitingList";
-// import { postUserInformation } from "~/fetchers/waitingList";
-// import { WaitingListApiEndPoint } from "~/fetchers/Interfaces";
 import { useActionData } from "@remix-run/react";
 import { useServerContext, ServerContext } from "describer-server-context";
-import { db } from "~/db.server";
-import { z } from "zod";
+import { checkUserInformation } from "./waitinglist";
 
 export const meta: MetaFunction = () => {
   return [
@@ -27,32 +20,8 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const userInformationsValudator = z.object({
-  fullname: z.string().min(1),
-  email: z.string().min(1),
-});
-
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-
-  try {
-    const result = userInformationsValudator.parse({
-      fullname: formData.get("fullname"),
-      email: formData.get("email"),
-    });
-
-    db.userWaiting.create({ data: result });
-    return json({ success: true });
-  } catch (e) {
-    const result = e as Zod.ZodError;
-    console.log(result.errors);
-    const response = result.errors.map((error) => ({
-      field: error.path[0],
-      code: error.code,
-    }));
-
-    return json(response);
-  }
 
   // db.userWaiting.create({});
 
@@ -68,6 +37,8 @@ export async function action({ request }: ActionFunctionArgs) {
   //     ...response.data,
   //   });
   // }
+
+  return checkUserInformation(formData);
 }
 
 export default function Index() {
